@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * This is the file description for Krug module.
+ *
+ * In this more verbose, multi-line description, you can specify what this
+ * file does exactly. Make sure to wrap your documentation in column 78 so
+ * that the file can be displayed nicely in default-sized consoles.
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function krug_field_formatter_info() {
+  return array(
+    'text_image' => array(
+      'label' => t('Text image'),
+      'field types' => array('text', 'text_long', 'text_with_summary'),
+      'settings' => array('image_style' => ''),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function krug_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $image_styles = image_style_options(FALSE);
+  $element['image_style'] = array(
+    '#title' => t('Image style'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_style'],
+    '#empty_option' => t('None (original image)'),
+    '#options' => $image_styles,
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function krug_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  $image_styles = image_style_options(FALSE);
+  // Unset possible 'No defined styles' option.
+  unset($image_styles['']);
+  // Styles could be lost because of enabled/disabled modules that defines
+  // their styles in code.
+  if (isset($image_styles[$settings['image_style']])) {
+    $summary[] = t('Image style: @style', array('@style' => $image_styles[$settings['image_style']]));
+  }
+  else {
+    $summary[] = t('Original image');
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function krug_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'text_image':
+      foreach ($items as $delta => $item) {
+        preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', _text_sanitize($instance, $langcode, $item, 'value'), $matches);
+        if (!empty($matches[1][0]) && strpos($matches[1][0], 'ttp://')) {
+          if (empty($settings['image_style'])) {
+            $markup = $matches[0][0];
+          }
+          else {
+            $markup = theme('imagecache_external', array('path' => $matches[1][0], 'style_name' => $settings['image_style']));
+          }
+          $element[$delta] = array('#markup' => $markup);
+        }
+      }
+      break;
+  }
+
+  return $element;
+}
+
