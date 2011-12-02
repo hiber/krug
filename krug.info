@@ -16,8 +16,7 @@ core = 7.x
 ; files[] = krug.class.inc
 
 ; Module dependencies
-dependencies[] = imagecache_external
-dependencies[] = pathologic
+dependencies[] = media
 
 ; Configuration page
 ; configure = admin/config/krug
