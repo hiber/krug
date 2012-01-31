@@ -1,0 +1,15 @@
+diff --git a/js/wysiwyg-media.js b/js/wysiwyg-media.js
+index 97697f0..98ae69b 100644
+--- a/js/wysiwyg-media.js
++++ b/js/wysiwyg-media.js
+@@ -327,9 +327,7 @@ Drupal.wysiwyg.plugins.media = {
+     if (additional) {
+       for (var name in additional) {
+         if (additional.hasOwnProperty(name)) {
+-          if (name !== 'alt') {
+-            imgElement.addClass('attr__' + name + '__' + additional[name]);
+-          }
++          imgElement.addClass('attr__' + name + '__' + additional[name]);
+         }
+       }
+     }

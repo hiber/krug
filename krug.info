@@ -17,6 +17,7 @@ core = 7.x
 
 ; Module dependencies
 dependencies[] = media
+dependencies[] = media_colorbox
 
 ; Configuration page
 ; configure = admin/config/krug

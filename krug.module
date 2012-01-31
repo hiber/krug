@@ -88,3 +88,36 @@ function krug_field_formatter_view($entity_type, $entity, $field, $instance, $la
 
   return $element;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function krug_form_media_add_upload_alter(&$form, &$form_state, $form_id) {
+  drupal_add_js(drupal_get_path('module', 'krug') . '/krug.js');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function krug_form_media_format_form_alter(&$form, &$form_state, $form_id) {
+  $form['options']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#size' => 40,
+    '#maxlength' => 255,
+  );
+  $form['options']['alt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Alt'),
+    '#size' => 40,
+    '#maxlength' => 255,
+  );
+  $form['options']['style'] = array(
+    '#type' => 'radios',
+    '#title' => t('Layout'),
+    '#description' => t('The description appears usually below the radio buttons.'),
+    '#options' => array("float:left;" =>"Left", "float:right;" =>"Right"),
+    '#default_value' => -1,
+  );
+}
+
